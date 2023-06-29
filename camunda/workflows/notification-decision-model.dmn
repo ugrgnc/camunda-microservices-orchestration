@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_1a1f4h4" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Web Modeler" exporterVersion="bd35223" camunda:diagramRelationId="61ff7029-910f-4d19-989f-679f3e616f7b" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.2.0">
+  <decision id="notification-decison" name="Notification Decision">
+    <decisionTable id="DecisionTable_0kyl4z0">
+      <input id="Input_1" label="customer_id">
+        <inputExpression id="InputExpression_1" typeRef="Any">
+          <text>customer_id</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" name="need_notification" typeRef="boolean" />
+      <rule id="DecisionRule_083vuyb">
+        <inputEntry id="UnaryTests_0q70ycx">
+          <text>customer_id &lt; 14350</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_100ktyl">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1be42vl">
+        <inputEntry id="UnaryTests_06xfwvc">
+          <text>customer_id &gt;= 14350</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0q8oex6">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="notification-decison">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
