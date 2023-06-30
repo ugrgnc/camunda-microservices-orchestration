@@ -8,7 +8,6 @@ import (
 func createCamundaConnection(cfg *bootstrap.CamundaConfig) (zbc.Client, error) {
 
 	credentialsProvider, _ := createCredentialsProvider(cfg)
-
 	client, err := zbc.NewClient(&zbc.ClientConfig{
 		GatewayAddress:      cfg.ZEEBE_ADDRESS,
 		CredentialsProvider: credentialsProvider,

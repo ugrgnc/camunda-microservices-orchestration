@@ -1,0 +1,94 @@
+version: "3.8"
+
+networks:
+  camunda_network:
+
+services:
+
+  zeebe:
+    container_name: zeebe
+    image: camunda/zeebe:latest
+    environment:
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_CLASSNAME=io.camunda.zeebe.exporter.ElasticsearchExporter
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_URL=http://elasticsearch:9200
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_BULK_DELAY=5
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_BULK_SIZE=1000
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_BULK_MEMORYLIMIT=104857600
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_INDEX_PREFIX=zeebe-record
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_INDEX_CREATETEMPLATE=true
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_INDEX_COMAND=false
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_INDEX_EVENT=true
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_INDEX_REJECTION=false
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_INDEX_DEPLOYMENT=true
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_INDEX_INCIDENT=true
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_INDEX_JOB=true
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_INDEX_JOBBATCH=true
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_INDEX_MESSAGE=true
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_INDEX_MESSAGESUBSCRIPTION=true
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_INDEX_PROCESSINSTANCE=true
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_INDEX_PROCESSINSTANCECREATION=true
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_INDEX_PROCESSINSTANCESUBSCRIPTION=true
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_INDEX_VARIABLE=true
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_INDEX_VARIABLEDOCUMENT=true
+    ports:
+      - "26500:26500"
+      - "9600:9600"
+    depends_on:
+      - elasticsearch
+    networks:
+      - camunda_network
+
+  operate:
+    container_name: operate
+    image: camunda/operate:latest
+    environment:
+      - CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS=zeebe:26500
+      - CAMUNDA_OPERATE_ELASTICSEARCH_URL=http://elasticsearch:9200
+      - CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
+      - LOGGING_LEVEL_ROOT=INFO
+    ports:
+      - "8081:8080"
+    depends_on:
+      - elasticsearch
+    networks:
+      - camunda_network
+
+  tasklist:
+    image: camunda/tasklist:latest
+    container_name: tasklist
+    ports:
+      - "8082:8080"
+    environment:
+      - CAMUNDA_TASKLIST_ZEEBE_GATEWAYADDRESS=zeebe:26500
+      - CAMUNDA_TASKLIST_ELASTICSEARCH_URL=http://elasticsearch:9200
+      - CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
+      - LOGGING_LEVEL_ROOT=INFO
+    depends_on:
+      - elasticsearch
+    networks:
+      - camunda_network
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.5
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - bootstrap.memory_lock=true
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - cluster.routing.allocation.disk.threshold_enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:9200/_cat/health | grep -q green" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - camunda_network
