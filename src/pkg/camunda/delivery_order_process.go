@@ -9,20 +9,10 @@ import (
 	"github.com/camunda/zeebe/clients/go/v8/pkg/worker"
 )
 
-// var deliveryOrderProcessHandlerChanel = make(chan struct{})
-
 func subscribeDeliveryOrderProcess() {
 
-	log.Println("For Delivery-Order-Process subscribed")
+	log.Println("for Delivery-Order-Process subscribed")
 	client.NewJobWorker().JobType("delivery-order-process").Handler(deliveryOrderProcessHandler).Open()
-
-	// log.Println("subscribeDeliveryOrderProcess waiting...")
-	// <-deliveryOrderProcessHandlerChanel
-
-	// log.Println("subscribeDeliveryOrderProcess finishing...")
-	// jobWorker.Close()
-	// jobWorker.AwaitClose()
-	// log.Println("subscribeDeliveryOrderProcess finished")
 }
 
 func deliveryOrderProcessHandler(client worker.JobClient, job entities.Job) {
@@ -57,7 +47,5 @@ func deliveryOrderProcessHandler(client worker.JobClient, job entities.Job) {
 		panic(err)
 	}
 
-	log.Println("Deliver-Order job successfully completed!")
-
-	// deliveryOrderProcessHandlerChanel <- struct{}{}
+	log.Println("Deliver-Order", jobKey, "successfully completed!")
 }

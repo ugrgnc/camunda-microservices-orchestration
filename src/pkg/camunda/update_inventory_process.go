@@ -8,20 +8,10 @@ import (
 	"github.com/camunda/zeebe/clients/go/v8/pkg/worker"
 )
 
-// var updateInventoryProcessHandlerChannel = make(chan struct{})
-
 func subscribeUpdateInventoryProcess() {
 
 	log.Println("For Update-Inventory-Process subscribed")
 	client.NewJobWorker().JobType("update-inventory-process").Handler(updateInventoryProcessHandler).Open()
-
-	// log.Println("subscribeUpdateInventoryProcess waiting...")
-	// <-updateInventoryProcessHandlerChannel
-
-	// log.Println("subscribeUpdateInventoryProcess finishing...")
-	// jobWorker.Close()
-	// jobWorker.AwaitClose()
-	// log.Println("subscribeUpdateInventoryProcess finished")
 }
 
 func updateInventoryProcessHandler(client worker.JobClient, job entities.Job) {
@@ -55,7 +45,5 @@ func updateInventoryProcessHandler(client worker.JobClient, job entities.Job) {
 		panic(err)
 	}
 
-	log.Println("Update-Inventory successfully completed!")
-
-	// updateInventoryProcessHandlerChannel <- struct{}{}
+	log.Println("Update-Inventory", jobKey, "successfully completed!")
 }

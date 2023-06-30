@@ -8,20 +8,10 @@ import (
 	"github.com/camunda/zeebe/clients/go/v8/pkg/worker"
 )
 
-// var sendNotificationProcessHandlerChannel = make(chan struct{})
-
 func subscribeSendNotificationProcess() {
 
 	log.Println("For Send-Notificaion-Process subscribed")
 	client.NewJobWorker().JobType("send-notification-process").Handler(sendNotificationProcessHandler).Open()
-
-	// log.Println("subscribeSendNotificationProcess waiting...")
-	// <-sendNotificationProcessHandlerChannel
-
-	// log.Println("subscribeSendNotificationProcess finishing...")
-	// jobWorker.Close()
-	// jobWorker.AwaitClose()
-	// log.Println("subscribeSendNotificationProcess finished")
 }
 
 func sendNotificationProcessHandler(client worker.JobClient, job entities.Job) {
@@ -55,7 +45,5 @@ func sendNotificationProcessHandler(client worker.JobClient, job entities.Job) {
 		panic(err)
 	}
 
-	log.Println("Send-Notification successfully completed!")
-
-	// sendNotificationProcessHandlerChannel <- struct{}{}
+	log.Println("Send-Notification", jobKey, "successfully completed!")
 }
