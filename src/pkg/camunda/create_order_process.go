@@ -13,10 +13,22 @@ func subscribeCreateOrderProcess() {
 
 	log.Println("for Create-Order-Process subscribed")
 	client.NewJobWorker().JobType("create-order-process").Handler(createOrderProcessHandler).Open()
+
+	// jobworker := client.NewJobWorker()
+	// job := jobworker.JobType("create-order-process")
+	// handler := job.Handler(createOrderProcessHandler)
+	// handler.Concurrency(5) // concurrency
+	// //handler.Timeout(time.Second * 3)
+	// handler.RequestTimeout(time.Second * 5)
+	// handler.Name("create-order-process-consumer")
+	// handler.Open()
+	//worker.Close()
+
 }
 
 func createOrderProcessHandler(client worker.JobClient, job entities.Job) {
 
+	//time.Sleep(time.Second * 5)
 	jobKey := job.GetKey()
 
 	variables, err := job.GetVariablesAsMap()

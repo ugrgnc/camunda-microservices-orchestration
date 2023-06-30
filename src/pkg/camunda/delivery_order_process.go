@@ -19,6 +19,17 @@ func deliveryOrderProcessHandler(client worker.JobClient, job entities.Job) {
 
 	jobKey := job.GetKey()
 
+	// log.Println("Complete job", jobKey, "of type", job.Type)
+
+	// errorRequest := client.NewThrowErrorCommand().JobKey(jobKey).ErrorCode("material-invalid")
+	// ctx := context.Background()
+	// _, err := errorRequest.Send(ctx)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// return
+
 	variables, err := job.GetVariablesAsMap()
 	if err != nil {
 		// failed to handle job as we require the variables

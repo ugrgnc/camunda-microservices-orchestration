@@ -38,6 +38,7 @@ func sendNotificationProcessHandler(client worker.JobClient, job entities.Job) {
 	log.Println("Send-Notification -> order_id ", variables["order_id"])
 	log.Println("Send-Notification -> payment_id ", variables["payment_id"])
 	log.Println("Send-Notification -> delivery_id", variables["delivery_id"])
+	log.Println("Send-Notification -> shipment_id", variables["shipment_id"])
 
 	ctx := context.Background()
 	_, err = request.Send(ctx)
